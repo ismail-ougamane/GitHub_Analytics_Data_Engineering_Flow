@@ -1,0 +1,37 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+
+# --- Secrets & credentials (never commit; guarded by tests/unit/test_no_secrets.py) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*_rsa
+secrets/
+credentials*.json
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# --- Data Engineering artifacts (large/local data never in git) ---
+data/raw/
+data/staging/
+*.duckdb
+*.duckdb.wal
+*.parquet
