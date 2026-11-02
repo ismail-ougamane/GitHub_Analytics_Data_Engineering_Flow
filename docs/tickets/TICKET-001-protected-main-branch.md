@@ -88,4 +88,12 @@ Idempotency also proven at the CLI level: the second `apply_governance.py
   linear history, conversation resolution.
 - Verified all live ACs green (`7 passed, 2 skipped`) and proved AC-3 with a
   real `GH006` rejection of a direct push by the owner.
+- **Incident (CI):** all three initial `push` runs failed with *"This run
+  likely failed because of a workflow file issue"* — root cause:
+  `permissions: administration: read` is not a valid GITHUB_TOKEN permission
+  scope, so GitHub rejected the workflow at validation time (zero jobs
+  executed; the failure was in the file, not the code). Fix: dropped the
+  invalid scope and moved the weekly drift check to a `GOVERNANCE_TOKEN` PAT
+  secret with a graceful skip when the secret is absent — GITHUB_TOKEN can
+  never read branch protection.
 
