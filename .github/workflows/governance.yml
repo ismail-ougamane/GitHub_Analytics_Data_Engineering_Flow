@@ -1,0 +1,42 @@
+name: governance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1" # weekly drift check (Monday 06:00 UTC)
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: unit tests (offline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install 'requests>=2.32' 'pytest>=8' 'ruff>=0.6'
+      - run: python -m pytest tests/unit
+      - run: ruff check src tests scripts
+
+  live-drift-check:
+    name: live AC verification (read-only)
+    # GITHUB_TOKEN gets `administration: read` so it can assert branch
+    # protection and collaborator state without any stored secret.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      administration: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install 'requests>=2.32' 'pytest>=8'
+      - run: python -m pytest tests/live -m live -v
+        env:
+          GOVERNANCE_LIVE: "1"
+          GH_TOKEN: ${{ github.token }}

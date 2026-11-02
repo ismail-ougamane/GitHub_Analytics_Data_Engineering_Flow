@@ -26,6 +26,7 @@ packages = ["src/github_governance"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+pythonpath = ["src"]
 markers = [
     "live: tests that assert real GitHub state (deselected unless GOVERNANCE_LIVE=1)",
 ]
