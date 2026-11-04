@@ -11,7 +11,7 @@ dist/
 .coverage
 coverage.xml
 
-# --- Secrets & credentials (never commit; guarded by tests/unit/test_no_secrets.py) ---
+# --- Secrets & credentials (never commit; GitHub secret scanning is the net) ---
 .env
 .env.*
 !.env.example
