@@ -1,19 +1,19 @@
 # Ticket 001 — Protected `main` branch
 
-**Status:** protection applied and re-verified 2026-11-04 — GitHub Actions removed · **Owner:** ismail-ougamane · **Date:** 2026-11-02 (created)
+**Status:** enforcement moved to the `main` ruleset + branch protection — governance-as-code removed 2026-11-04 · **Owner:** ismail-ougamane · **Date:** 2026-11-02 (created)
 
 > As a team member, I want `main` to be protected so that every change is
 > reviewed before it lands.
 
-## Acceptance criteria (each one is a live test, see `tests/live/`)
+## Acceptance criteria (verified against the live GitHub API — no test code lives in the repo)
 
-| ID | Criterion | Proof |
-|----|-----------|-------|
-| AC-1 | Repository created, public, `main` is the default branch with history | `tests/live/test_ac1_repository.py` |
-| AC-1b | Every colleague has write access | `tests/live/test_ac1b_collaborators.py` (loud `SKIPPED` until collaborators are configured) |
-| AC-2 | `main` requires a PR with ≥ 1 approval | `tests/live/test_ac2_reviews.py` |
-| AC-3 | Direct pushes to `main` are blocked | `tests/live/test_ac3_no_direct_push.py` + `make verify-blocking-push` |
-| AC-4 | Governance is idempotent, no drift | `tests/live/test_ac4_idempotent_apply.py` |
+| ID | Criterion | How to re-verify (read-only) |
+|----|-----------|------------------------------|
+| AC-1 | Repository created, public, `main` is the default branch with history | `gh api repos/ismail-ougamane/GitHub_Analytics_Data_Engineering_Flow --jq '{private,visibility,default_branch}'` → `{private:false, visibility:"public", default_branch:"main"}` |
+| AC-1b | Every colleague has write access | `gh api repos/…/collaborators --jq '.[] \| {login, role_name}'` → every non-owner has `write` or better |
+| AC-2 | `main` requires a PR with ≥ 1 approval | `gh api repos/…/branches/main/protection` → `required_pull_request_reviews.required_approving_review_count >= 1` |
+| AC-3 | Direct pushes to `main` are blocked | same endpoint → `enforce_admins.enabled == true`, `allow_force_pushes.enabled == false`, `allow_deletions.enabled == false`; the ruleset additionally blocks deletion and non-fast-forward |
+| AC-4 | ~~Governance is idempotent, no drift~~ | **Retired 2026-11-04** together with the `plan`/`apply` tooling — enforcement moved to the ruleset + branch protection |
 
 ## Plan (decisions D1–D10)
 
@@ -102,7 +102,43 @@ Findings recorded on 2026-11-04:
   scope — every `push` run failed in ~0s), so removing it fixes red CI rather
   than losing a working check.
 
+## Governance-as-code removed — 2026-11-04
+
+With the ruleset intended as the enforcement layer, the executable governance
+machinery was deleted in full: `src/github_governance/`,
+`scripts/apply_governance.py`, `scripts/verify_blocking_push.sh`, `tests/`
+(unit + live), `config/governance.toml`, `Makefile` and `pyproject.toml`.
+The repository keeps only docs, tickets and GitHub settings.
+
+What enforces the criteria now (observed state, 2026-11-04):
+
+- **Ruleset `main` (26561116)**: `pull_request` (1 approval, stale-review
+  dismissal, last-push approval), plus `deletion` and `non_fast_forward`
+  blocked. ⚠️ Observed `enforcement: disabled` via the API at removal time —
+  activate it in Settings → Rules → Rulesets, or with
+  `gh api -X PUT repos/ismail-ougamane/GitHub_Analytics_Data_Engineering_Flow/rulesets/26561116 -f enforcement=active`.
+  Until then **classic branch protection is the enforcing layer**.
+- **Classic branch protection on `main`** (still active): 1 approval,
+  stale-review dismissal, last-push approval, `enforce_admins`, linear
+  history, conversation resolution, no force-push/deletion.
+- **GitHub secret scanning + push protection** (the secret gate).
+
+AC-1 … AC-3 and AC-1b were re-verified live on 2026-11-04 (re-validation
+table above); AC-4 is retired with the tooling.
+
 ## Changelog
+
+### 2026-11-04 — governance-as-code removed
+- **Removed all governance code**: `src/github_governance/`,
+  `scripts/apply_governance.py`, `scripts/verify_blocking_push.sh`, `tests/`
+  (unit + live), `config/governance.toml`, `Makefile`, `pyproject.toml` — the
+  ruleset + branch protection carry enforcement, so the executable layer is
+  no longer wanted in the repo.
+- Rewrote `README.md`, `CONTRIBUTING.md` and the PR template; trimmed
+  `.gitignore`; updated the ticket index status.
+- AC-4 retired; AC-1 … AC-3 + AC-1b re-verified live with `gh api`.
+- Caveat recorded: ruleset `main` observed `enforcement: disabled` at removal
+  time; classic branch protection active and enforcing.
 
 ### 2026-11-04
 - **Removed GitHub Actions** (`.github/workflows/governance.yml`). Rationale:
