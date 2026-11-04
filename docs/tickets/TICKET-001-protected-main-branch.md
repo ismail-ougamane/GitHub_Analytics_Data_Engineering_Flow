@@ -114,10 +114,9 @@ What enforces the criteria now (observed state, 2026-11-04):
 
 - **Ruleset `main` (26561116)**: `pull_request` (1 approval, stale-review
   dismissal, last-push approval), plus `deletion` and `non_fast_forward`
-  blocked. ⚠️ Observed `enforcement: disabled` via the API at removal time —
-  activate it in Settings → Rules → Rulesets, or with
-  `gh api -X PUT repos/ismail-ougamane/GitHub_Analytics_Data_Engineering_Flow/rulesets/26561116 -f enforcement=active`.
-  Until then **classic branch protection is the enforcing layer**.
+  blocked. ✅ Re-checked 2026-11-04: `enforcement: active` (it was still
+  `disabled` at removal time; classic branch protection covered enforcement
+  in the interim). Both layers are now active.
 - **Classic branch protection on `main`** (still active): 1 approval,
   stale-review dismissal, last-push approval, `enforce_admins`, linear
   history, conversation resolution, no force-push/deletion.
@@ -139,6 +138,8 @@ table above); AC-4 is retired with the tooling.
 - AC-4 retired; AC-1 … AC-3 + AC-1b re-verified live with `gh api`.
 - Caveat recorded: ruleset `main` observed `enforcement: disabled` at removal
   time; classic branch protection active and enforcing.
+- Re-check: ruleset `main` confirmed `enforcement: active` — the ruleset and
+  classic branch protection now both enforce AC-2/AC-3.
 
 ### 2026-11-04
 - **Removed GitHub Actions** (`.github/workflows/governance.yml`). Rationale:
