@@ -1,6 +1,6 @@
 # Ticket 001 — Protected `main` branch
 
-**Status:** protection applied — awaiting first reviewed PR (#2) to close · **Owner:** ismail-ougamane · **Date:** 2026-11-02
+**Status:** protection applied and re-verified 2026-11-04 — GitHub Actions removed · **Owner:** ismail-ougamane · **Date:** 2026-11-02 (created)
 
 > As a team member, I want `main` to be protected so that every change is
 > reviewed before it lands.
@@ -71,7 +71,53 @@
 Idempotency also proven at the CLI level: the second `apply_governance.py
 --plan` printed `No drift: repository matches the desired state.`
 
+## Live re-validation — 2026-11-04 (GitHub Actions removed)
+
+The `governance` workflow was removed (see changelog). Every acceptance
+criterion was re-validated directly against the live GitHub API (`gh api`,
+read-only) instead of CI:
+
+| ID | Criterion | Result | Live evidence (2026-11-04) |
+|----|-----------|--------|----------------------------|
+| AC-1 | Repo created, public, `main` default with history | ✅ pass | `gh api repos/…`: `private:false`, `visibility:public`, `default_branch:main`; 2 commits on `main` |
+| AC-1b | Every colleague has write access | ✅ pass (fact) · ⏸️ test still skips | collaborators: `mektoubizakaria` → `role_name:"write"`, `othmane-fathallah` → `role_name:"write"`; owner → `admin`. `config/governance.toml` still lists 0 collaborators, so `test_ac1b_collaborators.py` keeps its loud skip (D6) |
+| AC-2 | PR required with ≥ 1 approval | ✅ pass | `required_approving_review_count:1`, `dismiss_stale_reviews:true`, `require_last_push_approval:true` |
+| AC-3 | Direct pushes blocked | ✅ pass | `enforce_admins:{enabled:true}`, `allow_force_pushes:{enabled:false}`, `allow_deletions:{enabled:false}`, `required_pull_request_reviews` present |
+| AC-4 | Idempotent, no drift | ✅ pass | `apply_governance.py --plan` → `No drift: repository matches the desired state.` |
+
+Offline suites at validation time: `tests/unit` 26 passed · `tests/live`
+7 passed, 2 skipped (AC-1b) · `ruff check` clean.
+
+Findings recorded on 2026-11-04:
+
+- **Ruleset `main` (id 26561116) is `enforcement: disabled`.** It was added in
+  the GitHub UI on 2026-11-04 but currently enforces nothing; classic branch
+  protection is what makes AC-2/AC-3 pass. If it is meant to replace the
+  workflow it must be activated — and it would still not cover
+  `required_linear_history` / `required_conversation_resolution`.
+- **PR #2 was approved by `othmane-fathallah` and then closed unmerged** — the
+  first real review exercised by the protected flow, but its ticket evidence
+  only landed with the PR that removed Actions.
+- The workflow version on `main` could never pass (invalid `administration`
+  scope — every `push` run failed in ~0s), so removing it fixes red CI rather
+  than losing a working check.
+
 ## Changelog
+
+### 2026-11-04
+- **Removed GitHub Actions** (`.github/workflows/governance.yml`). Rationale:
+  the version on `main` carried the invalid `administration: read`
+  GITHUB_TOKEN scope and could never run (all three `push` runs failed in
+  ~0s); enforcement of the ACs lives in GitHub branch protection plus the
+  repository ruleset; verification remains available locally via `make test`
+  and `make test-live`.
+- Re-validated every AC live with `gh api` (table above) — all pass. AC-1b
+  still skips in tests until collaborators are added to
+  `config/governance.toml`; two colleagues already have write access live.
+- Recorded that the ruleset `main` (26561116) is disabled, and that PR #2
+  (approved by `othmane-fathallah`) was closed unmerged.
+- Fixed `README.md` linking to the non-existent `config/governance.yaml` →
+  `config/governance.toml`.
 
 ### 2026-11-02
 - Created repository `GitHub_Analytics_Data_Engineering_Flow` (public, GitHub

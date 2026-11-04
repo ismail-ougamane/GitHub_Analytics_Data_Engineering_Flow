@@ -15,7 +15,7 @@ lands.
 ## How we work
 
 - `main` is protected: changes land via pull request with **≥1 approval**
-  ([branch protection](config/governance.yaml) is applied by code, not clicks)
+  ([branch protection](config/governance.toml) is applied by code, not clicks)
 - Every ticket ships a `docs/tickets/TICKET-XXX-*.md` file containing its
   **plan** and a dated **changelog**
 - Tests drive everything: `make test` (offline, every PR) and
