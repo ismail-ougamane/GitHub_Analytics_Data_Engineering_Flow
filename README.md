@@ -15,3 +15,23 @@ GitHub activity data.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the review workflow, and
 [docs/tickets/README.md](docs/tickets/README.md) for the ticket index.
+
+## Branching & pull request workflow
+
+**One phase = one feature branch = one pull request.** Each ticket gets its own
+branch off `main` — `feat/ticket-XXX-slug` (or `fix`/`chore`/`docs`/`test`) —
+and exactly one pull request.
+
+**Pull requests start as drafts.** Open with `gh pr create --fill --draft`, flip
+to ready with `gh pr ready`, and merge only after review (≥ 1 approval, enforced
+by the ruleset). Squash-merge, then delete the branch.
+
+**The 7-step loop:**
+
+1. **Goal** — pick the ticket, write its acceptance criteria.
+2. **Branch** — `git checkout -b feat/ticket-XXX-slug`
+3. **Build** — smallest change that meets the criteria.
+4. **Test** — prove the criteria, record the result.
+5. **Document** — add a changelog entry to the ticket doc.
+6. **PR** — open a draft PR, then mark it ready.
+7. **Share** — request review, get 1 approval, squash-merge, delete branch.
