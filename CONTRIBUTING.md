@@ -10,7 +10,7 @@ Direct pushes, force pushes and deletions are blocked — admins included.
 git checkout -b <type>/<ticket>-<slug>     # e.g. feat/ticket-002-ingestion
 # ...work...
 git push -u origin HEAD
-gh pr create --fill
+gh pr create --fill --draft
 ```
 
 A teammate reviews and approves; then the PR can be merged.
