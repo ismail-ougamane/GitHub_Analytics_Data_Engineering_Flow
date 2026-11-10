@@ -16,6 +16,40 @@ GitHub activity data.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the review workflow, and
 [docs/tickets/README.md](docs/tickets/README.md) for the ticket index.
 
+## Run Airflow locally
+
+The orchestration layer lives in [`orchestration/`](orchestration/) as an
+[Astro](https://www.astronomer.io/docs/astro/cli/overview) project — Astro
+Runtime 3.3-12, i.e. Apache Airflow 3.3 (Python 3.14) in Docker.
+
+**One-time setup** (see the [Astro install docs](https://www.astronomer.io/docs/astro/cli/install-cli)):
+
+```bash
+brew tap astronomer/tap && brew install astronomer/tap/astro --without-podman
+open -a Docker   # Docker Desktop must be running
+```
+
+**Everyday loop** — all `astro` commands run from the project directory:
+
+```bash
+cd orchestration
+astro dev start                    # build + start local Airflow (4 containers)
+astro dev pytest tests/dags -a "-v"  # DAG integrity tests (DagBag)
+astro dev stop                     # stop when done (astro dev kill = hard reset)
+```
+
+- **Airflow UI:** <http://localhost:8080> (Astro's project-scoped proxy also
+  serves it at <http://orchestration.localhost:6563>).
+- **Dags:** `orchestration/dags/` — currently the `example_astronauts` example
+  DAG (`dags/exampledag.py`).
+- **Tests:** `orchestration/tests/dags/` — DagBag-based checks: no import
+  errors, every DAG has tags and retries.
+- **Local-only files:** `.astro/standalone|worktrees|*.local.*` (project local
+  state) and `.env` (environment variables) are gitignored; `.astro/config.yaml`
+  (project name) **is** committed — Astro uses it to detect the project.
+  `airflow_settings.yaml` holds local connections/variables — placeholders
+  only, **never put secrets there**.
+
 ## Branching & pull request workflow
 
 **One phase = one feature branch = one pull request.** Each ticket gets its own
