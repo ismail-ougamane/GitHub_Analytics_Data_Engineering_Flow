@@ -8,3 +8,4 @@ describes, so the history of *why* is reviewable exactly like the code.
 |--------|-------|--------|
 | [001](TICKET-001-protected-main-branch.md) | Protected `main` branch | done — enforced by the `main` ruleset |
 | [002](TICKET-002-branching-and-pr-workflow.md) | Branching and pull request workflow | in review |
+| [004](TICKET-004-readme-architecture-diagram.md) | README starts with the architecture diagram | in review |
