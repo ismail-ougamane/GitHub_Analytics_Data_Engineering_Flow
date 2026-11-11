@@ -5,8 +5,10 @@ next to them:
 
 | Source (canonical) | Rendered (embedded in README) |
 |--------------------|-------------------------------|
-| `architecture-flow.excalidraw` | `architecture-flow.svg` |
-| `dbt-lineage.excalidraw` | `dbt-lineage.svg` |
+| `infra.excalidraw` | `infra.svg` — what runs where |
+| `pipeline-flow.excalidraw` | `pipeline-flow.svg` — one run of the DAG |
+| `snowflake.excalidraw` | `snowflake.svg` — schemas, roles, compute |
+| `dbt-lineage.excalidraw` | `dbt-lineage.svg` — dbt model lineage |
 
 **GitHub renders only the SVG** — an `.excalidraw` file is a JSON scene, so it
 shows up as plain text. That is why every diagram is committed twice: the

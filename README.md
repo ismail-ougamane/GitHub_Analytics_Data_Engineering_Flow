@@ -4,9 +4,16 @@ From GitHub's GraphQL API to charts, in one auditable pipeline:
 **GitHub GraphQL API → dlt → Snowflake → dbt → dbt charts**, orchestrated
 end-to-end by **Airflow 3.3 on Astro**.
 
-![End-to-end architecture: GitHub GraphQL API, dlt, Snowflake RAW/STAGING/MARTS, dbt charts, orchestrated by Airflow on Astro](docs/architecture/architecture-flow.svg)
+The architecture in three pictures — what runs where, how one run flows, and
+what lives in the warehouse:
 
-## What one run looks like
+### 1 · Infrastructure — what runs where
+
+![Infrastructure: local machine with the Astro CLI and Airflow containers in Docker, the GitHub repo with its protected main branch, and the Snowflake account](docs/architecture/infra.svg)
+
+### 2 · Orchestration & dbt flow — one run of the DAG
+
+![One run of the DAG: Airflow tasks (extract, dbt run, dbt test, publish) mapped to the Snowflake layers they produce](docs/architecture/pipeline-flow.svg)
 
 Airflow triggers the stages in order — each stage is a task in the DAG:
 
@@ -18,6 +25,10 @@ Airflow triggers the stages in order — each stage is a task in the DAG:
 | 4 | `dbt run — marts` | dbt models build `fct_*` / `dim_*` star-schema tables |
 | 5 | `dbt test — marts` | mart-level tests + source freshness |
 | 6 | `publish` | refresh dbt charts, notify on failure |
+
+### 3 · Snowflake — schemas, roles, compute
+
+![Snowflake internals: RAW, STAGING and MARTS schemas, role-based access, compute warehouses](docs/architecture/snowflake.svg)
 
 ## Modelling with dbt
 

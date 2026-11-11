@@ -10,7 +10,7 @@
 | ID | Criterion | Proof |
 |----|-----------|-------|
 | AC-1 | README describes the goal: GitHub API → dlt → Snowflake → dbt → dashboards, orchestrated by Airflow | `README.md` opening paragraph + "What one run looks like" table |
-| AC-2 | An Excalidraw architecture diagram renders on GitHub | `docs/architecture/architecture-flow.svg` embedded at the top of `README.md`; visual proof: PNG rasterised from the SVG + screenshot of the rendered README on github.com |
+| AC-2 | An Excalidraw architecture diagram renders on GitHub | `docs/architecture/infra.svg`, `pipeline-flow.svg`, `snowflake.svg` embedded in `README.md`; visual proof: PNG rasterised from each SVG + screenshot of the rendered README on github.com |
 | AC-3 | The README explains the *why* of every choice | "Why these choices" table (GitHub GraphQL, dlt, Snowflake ELT, dbt, charts-in-dbt, Airflow on Astro — each with rejected alternatives) |
 
 ## Plan (decisions D1–D9)
@@ -47,6 +47,14 @@
 - **D9** An unrelated uncommitted revert of `TICKET-001-*.md` was found in the
   working tree before checkout; it was stashed (`stash@{0}`, labelled) and is
   **not** part of this ticket. Files are staged by explicit path only.
+- **D10** After first review the single dense end-to-end diagram was split into
+  three focused ones — `infra` (what runs where), `pipeline-flow` (one run of
+  the DAG mapped to the layers it produces) and `snowflake` (schemas, roles,
+  compute) — replacing `architecture-flow.*`. Style: roughness 0 (clean lines),
+  shared palette (grey = source, blue = EL/staging, green = marts, amber =
+  charts, purple = tests/roles), accent-bar panel headers. Multi-point arrows
+  are avoided: Excalidraw smooths them into curves, so routed connections use
+  straight segments only. `dbt-lineage` is kept for the modelling section.
 
 ## TDD / verification log
 
@@ -104,3 +112,13 @@
   text collapses (utils 0.1.2) — sub-labels re-generated as **one single-line
   text element per line**, both SVGs re-rendered, re-verified locally and
   re-verified on github.com; PR flipped to ready afterwards.
+
+### 2026-11-11 (review feedback)
+- Split the single end-to-end diagram into three focused pictures — `infra`,
+  `pipeline-flow`, `snowflake` (decision D10) — restyled with roughness 0 and
+  a shared palette; `architecture-flow.excalidraw/.svg` removed.
+- `README.md` restructured: three `###` subsections with one embed each; the
+  task-sequence table moved under picture 2; `dbt-lineage` kept for the
+  modelling section.
+- Re-verified: structural validation (57 / 59 / 56 elements), SVG re-export,
+  rasterised PNG inspection, then on-GitHub render check on the PR branch.
