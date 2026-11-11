@@ -82,7 +82,7 @@
 | ID | Criterion | Result | Evidence |
 |----|-----------|--------|----------|
 | AC-1 | Goal chain stated in README | ✅ pass | opening paragraph + task table |
-| AC-2 | Excalidraw diagram renders on GitHub | ✅ pass | SVG committed + rasterised PNG inspected; github.com render check follows in the PR |
+| AC-2 | Excalidraw diagram renders on GitHub | ✅ pass | SVG committed + rasterised PNG inspected; screenshot of `github.com/…/blob/docs/ticket-004-readme-architecture/README.md` shows **both** SVGs rendering on GitHub |
 | AC-3 | Rationale per choice | ✅ pass | "Why these choices" table, 6 rows |
 
 ## Changelog
@@ -99,3 +99,8 @@
 - `docs/tickets/README.md`: index row for ticket 004.
 - Noted the jsdom-based `excalidraw-to-svg` failure and the working
   puppeteer-core + Chrome export path (TDD log above).
+- Opened draft PR [#6](https://github.com/ismail-ougamane/GitHub_Analytics_Data_Engineering_Flow/pull/6);
+  first on-GitHub render check exposed a real exporter bug: multi-line free
+  text collapses (utils 0.1.2) — sub-labels re-generated as **one single-line
+  text element per line**, both SVGs re-rendered, re-verified locally and
+  re-verified on github.com; PR flipped to ready afterwards.
