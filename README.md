@@ -53,7 +53,7 @@ astro dev stop                     # stop when done (astro dev kill = hard reset
 ## Provision Snowflake for raw data
 
 The raw layer lives in [`snowflake/`](snowflake/) — see
-[TICKET-004](docs/tickets/TICKET-004-snowflake-raw-provisioning.md).
+[TICKET-005](docs/tickets/TICKET-005-snowflake-raw-provisioning.md).
 
 **Objects:** warehouse `COMPUTE_WH` (XSMALL, auto-suspend 60 s), database
 `github_raw` (owned by `SYSADMIN`), role `data_engineer`, service user

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assertions for ticket 004 — "Provision Snowflake for raw data".
+"""Assertions for ticket 005 — "Provision Snowflake for raw data".
 
 Run from the repo root:
 
@@ -96,7 +96,7 @@ def connect_dlt():
         role=ROLE,
         warehouse=WAREHOUSE,
         database=DATABASE,
-        session_parameters={"QUERY_TAG": "ticket-004-verify"},
+        session_parameters={"QUERY_TAG": "ticket-005-verify"},
     )
 
 

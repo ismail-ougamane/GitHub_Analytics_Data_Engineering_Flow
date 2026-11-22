@@ -1,4 +1,4 @@
-"""Offline contract tests for snowflake/snowflake_setup.sql (ticket 004).
+"""Offline contract tests for snowflake/snowflake_setup.sql (ticket 005).
 
 Why these exist: the setup script can only be proven against a live account, but
 its *guarantees* are static. Each test pins one guarantee so a future edit that

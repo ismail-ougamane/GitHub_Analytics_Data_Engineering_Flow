@@ -1,4 +1,4 @@
-# Verifies ticket 004 (Snowflake provisioning) WITHOUT Snowflake.
+# Verifies ticket 005 (Snowflake provisioning) WITHOUT Snowflake.
 
 The ticket script needs a live account; its *logic* does not. These tests pin the
 pieces that a reviewer would otherwise have to take on faith — above all that the

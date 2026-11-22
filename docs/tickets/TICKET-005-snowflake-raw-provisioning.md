@@ -1,4 +1,4 @@
-# Ticket 004 — Provision Snowflake for raw data
+# Ticket 005 — Provision Snowflake for raw data
 
 **Status:** in review · **Owner:** ismail-ougamane · **Date:** 2026-11-20
 
@@ -17,7 +17,7 @@
 ## Plan (decisions D1–D9)
 
 Analysis first: `grep -riE 'snowflake|dlt|github_raw|dlt_dev|COMPUTE_WH'` over the
-repo returned **0 hits** — Ticket 004 is the first Snowflake artefact, so this
+repo returned **0 hits** — Ticket 005 is the first Snowflake artefact, so this
 plan also fixes the layout the next tickets will reuse.
 
 - **D1 — `snowflake/` at the repo root**, next to `orchestration/`. Same reason
@@ -154,7 +154,7 @@ human admin path exists: `ALTER USER "ismail.ougamane" REMOVE KEY PAIR bootstrap
 ## Changelog
 
 ### 2026-11-20
-- Branch `feat/ticket-004-snowflake-raw-provisioning` created; this ticket doc
+- Branch `feat/ticket-005-snowflake-raw-provisioning` created; this ticket doc
   and the `snowflake/tests/` layout added as the receipt for the plan.
 - Added `snowflake/snowflake_setup.sql` (21 statements, idempotent, no
   `CREATE OR REPLACE`): `COMPUTE_WH`, `github_raw` (owner `SYSADMIN`),

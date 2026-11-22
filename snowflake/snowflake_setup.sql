@@ -1,6 +1,6 @@
 -- =============================================================================
 -- snowflake/snowflake_setup.sql
--- Ticket: docs/tickets/TICKET-004-snowflake-raw-provisioning.md
+-- Ticket: docs/tickets/TICKET-005-snowflake-raw-provisioning.md
 --
 -- Provisions the raw layer for the GitHub (Airflow repo) metadata pipeline:
 --   warehouse COMPUTE_WH · database github_raw · role data_engineer
