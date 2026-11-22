@@ -1,0 +1,15 @@
+[project]
+name = "dataeng-project"
+version = "0.1.0"
+description = "Snowflake raw-layer provisioning and the dlt loader for github_raw (tickets 004+)."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "snowflake-connector-python>=3.17.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "ruff>=0.6.0",
+]

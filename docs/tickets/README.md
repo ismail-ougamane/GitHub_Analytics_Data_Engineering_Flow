@@ -9,3 +9,4 @@ describes, so the history of *why* is reviewable exactly like the code.
 | [001](TICKET-001-protected-main-branch.md) | Protected `main` branch | done — enforced by the `main` ruleset |
 | [002](TICKET-002-branching-and-pr-workflow.md) | Branching and pull request workflow | done — merged `6ff1359` |
 | [003](TICKET-003-local-airflow-astro-cli.md) | Run Airflow locally with the Astro CLI | in review |
+| [005](TICKET-005-snowflake-raw-provisioning.md) | Provision Snowflake for raw data | in progress |

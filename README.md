@@ -50,7 +50,54 @@ astro dev stop                     # stop when done (astro dev kill = hard reset
   `airflow_settings.yaml` holds local connections/variables — placeholders
   only, **never put secrets there**.
 
-## Branching & pull request workflow
+## Provision Snowflake for raw data
+
+The raw layer lives in [`snowflake/`](snowflake/) — see
+[TICKET-005](docs/tickets/TICKET-005-snowflake-raw-provisioning.md).
+
+**Objects:** warehouse `COMPUTE_WH` (XSMALL, auto-suspend 60 s), database
+`github_raw` (owned by `SYSADMIN`), role `data_engineer`, service user
+`dlt_dev` (key-pair only, `TYPE = SERVICE`, so password auth is impossible).
+
+**One-time key pair — outside the repo, never printed:**
+
+```bash
+./snowflake/keys/generate_keypair.sh
+# -> ~/.snowflake/keys/github_raw/dlt_dev/{rsa_key.p8,rsa_key.pub,rsa_key.pub.b64}
+#    (700 dir, 600 files; the script refuses to write inside the repository)
+```
+
+**Run the setup (idempotent — safe to re-run):**
+
+```bash
+uv sync                                                  # connector + pytest from pyproject.toml
+
+# login: SNOWFLAKE_ACCOUNT is optional if your connection is marked default
+snow connection set-default <connection-name>
+snow connection test                                     # proves the login works
+
+# 1. dry run: split + parameter render, no login, no DDL
+uv run python snowflake/run_sql.py --dry-run             # 21 executable statements
+
+# 2. offline contract tests (no Snowflake at all: no OR REPLACE, no FUTURE grants,
+#    exact grant set, key never clobbers an existing one)
+uv run pytest snowflake/tests -q
+
+# 3. the real run, twice — the 2nd pass is the idempotency proof
+uv run python snowflake/run_sql.py
+uv run python snowflake/run_sql.py
+
+# 4. assertions: AC-1/2/3, grant review incl. PUBLIC, JSON snapshot to diff
+uv run python snowflake/tests/verify.py admin
+uv run python snowflake/tests/verify.py dlt              # positive + negative as dlt_dev
+```
+
+`verify.py` asserts outcomes (including the expected error code for every
+negative test) and exits non-zero on any violation. Rules this ticket keeps:
+`CREATE OR REPLACE` is never used, the private key never leaves
+`~/.snowflake/`, and the loader gets no `FUTURE` grants.
+
+
 
 **One phase = one feature branch = one pull request.** Each ticket gets its own
 branch off `main` — `feat/ticket-XXX-slug` (or `fix`/`chore`/`docs`/`test`) —
