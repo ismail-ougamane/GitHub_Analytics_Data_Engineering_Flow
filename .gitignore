@@ -35,3 +35,11 @@ data/staging/
 *.duckdb
 *.duckdb.wal
 *.parquet
+
+# --- Astro CLI (local Airflow) ---
+.astro/standalone/
+.astro/worktrees/
+.astro/*.local.yml
+.astro/*.local.yaml
+logs/
+.env
